@@ -24,31 +24,28 @@ module.exports = {
         //   await page.screenshot({ path: "example.png", fullPage: true });
 
         const titles = await page.evaluate(() => {
-          return Array.from(document.querySelectorAll("#search-result-items > li > div > div.variant-desc > span.variant-title > a")).map(
-            (x) => x.getAttribute("title")
-          );
-
+          return Array.from(
+            document.querySelectorAll(
+              "#search-result-items > li > div > div.variant-desc > span.variant-title > a"
+            )
+          ).map((x) => x.getAttribute("title"));
         });
 
         const linksArr = await page.evaluate(() => {
-          return Array.from(document.querySelectorAll("#search-result-items > li > div > div.variant-desc > span.variant-title > a")).map(
-            (x) => x.getAttribute("href")
-          );
-
-        
-
-
+          return Array.from(
+            document.querySelectorAll(
+              "#search-result-items > li > div > div.variant-desc > span.variant-title > a"
+            )
+          ).map((x) => x.getAttribute("href"));
         });
 
         const pricesArr = await page.evaluate(() => {
-          return Array.from(document.querySelectorAll("#search-result-items > li > div > div.variant-desc > span.price > span.variant-final-price > span")).map(
-            (x) => x.textContent
-          );
-
-        
-
+          return Array.from(
+            document.querySelectorAll(
+              "#search-result-items > li > div > div.variant-desc > span.price > span.variant-final-price > span"
+            )
+          ).map((x) => x.textContent);
         });
-
 
         for (let i = 0; i < linksArr.length; i++) {
           linksArr[i] = baseUrl + linksArr[i];
@@ -58,11 +55,13 @@ module.exports = {
         console.log(linksArr);
         console.log(pricesArr);
 
-
-
         var jsonArr = [];
         for (let i = 0; i < titles.length; i++) {
-          jsonArr.push({ title: titles[i], link: linksArr[i], price: pricesArr[i] });
+          jsonArr.push({
+            title: titles[i],
+            link: linksArr[i],
+            price: pricesArr[i],
+          });
         }
 
         console.log(jsonArr);
