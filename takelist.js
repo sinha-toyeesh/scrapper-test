@@ -1,5 +1,6 @@
 const puppeteer = require("puppeteer");
 const fs = require("fs/promises");
+const amazn = require("./amazon_price.js");
 
 module.exports = {
   //export start function
@@ -47,6 +48,18 @@ module.exports = {
           ).map((x) => x.textContent);
         });
 
+        // const imgArr = await page.evaluate(() => {
+        //   return Array.from(
+        //     document.querySelectorAll(
+        //       "#search-result-items > li > div > div.variant-image > a > span > span:nth-child(3) > img"
+        //     )
+        //   ).map((x) => str(x.getAttribute("src")));
+        // });
+
+        const imgArr = await page.$$eval(".variant-image img[src]", (imgs) =>
+          imgs.map((img) => img.getAttribute("src"))
+        );
+
         for (let i = 0; i < linksArr.length; i++) {
           linksArr[i] = baseUrl + linksArr[i];
         }
@@ -54,6 +67,7 @@ module.exports = {
         console.log(titles);
         console.log(linksArr);
         console.log(pricesArr);
+        console.log(imgArr);
 
         var jsonArr = [];
         for (let i = 0; i < titles.length; i++) {
@@ -61,6 +75,7 @@ module.exports = {
             title: titles[i],
             link: linksArr[i],
             price: pricesArr[i],
+            img: imgArr[i],
           });
         }
 

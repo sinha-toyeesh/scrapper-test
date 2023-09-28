@@ -1,6 +1,7 @@
 var fs = require("fs");
 const takelist = require("./takelist.js");
 
+
 // function unlinkPromise(file) {
 //   return new Promise((resolve, reject) => {
 //     fs.unlink(file, (err, data) => {
@@ -15,11 +16,13 @@ const takelist = require("./takelist.js");
 async function main() {
   console.log("main function");
 
-  var link =
-    "https://mkp.gem.gov.in/non-metals-and-pure-and-elemental-gases-compressed-oxygen-gas/search";
+  var link = "https://mkp.gem.gov.in/computers-desktop-computer/search";
+
+  // var search =
+  //   "hp Intel Core i5 12400 16 GB/ 1000 GB HDD/ Windows 10 Professional";
 
   takelist
-    .start(link)
+    .start(search)
     .then(() => {
       console.log("Execution completed successfully.");
     })
