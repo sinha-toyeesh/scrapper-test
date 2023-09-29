@@ -1,41 +1,64 @@
-const puppeteer = require("puppeteer");
+const puppeteer = require("puppeteer-extra");
+
+// add stealth plugin and use defaults (all evasion techniques)
+const StealthPlugin = require("puppeteer-extra-plugin-stealth");
+puppeteer.use(StealthPlugin());
 const fs = require("fs/promises");
+
+const { executablePath } = require("puppeteer");
 
 module.exports = {
   //export start function
 
-  start: async function (search, val) {
+  start: async function (search) {
     return new Promise(async (resolve, reject) => {
       try {
-        const browser = await puppeteer.launch({ headless: false });
-        const page = await browser.newPage();
+        const browser = await puppeteer
+          .launch({
+            headless: true,
+            executablePath: executablePath(),
+          })
+          .then(async (browser) => {
+            const page = await browser.newPage();
+
+            await page.setUserAgent(
+              "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36"
+            );
+
+            /////////////////////////
+
+            var baseUrl = "https://www.amazon.in/s?k=";
+
+            const seacrhArr = search.split(" ");
+
+            for (let i = 0; i < seacrhArr.length; i++) {
+              // console.log(search[i]);
+              baseUrl += seacrhArr[i];
+              baseUrl += "+";
+            }
+
+            baseUrl = baseUrl.slice(0, -1);
+
+            console.log(baseUrl);
+
+            /////////////////////////
+
+            await page.goto(baseUrl);
+            await page.screenshot({ path: "example.png", fullPage: true });
+
+            const titles = await page.evaluate(() => {
+              return document.querySelector("span.a-price-whole").innerHTML;
+            });
+
+            
+
+            await browser.close();
+
+            resolve(titles);
+
+          });
 
         /////////////////////////
-
-        var baseUrl = "https://www.amazon.in/s?k=";
-
-        const seacrhArr = search.split(" ");
-
-        for (let i = 0; i < seacrhArr.length; i++) {
-          // console.log(search[i]);
-          baseUrl += seacrhArr[i];
-          baseUrl += "+";
-        }
-
-        baseUrl.slice(0, -1);
-
-        console.log(baseUrl);
-
-        /////////////////////////
-
-        await page.goto(baseUrl);
-        await page.screenshot({ path: "example.png", fullPage: true });
-
-        const titles = await page.evaluate(() => {
-          return document.querySelector(
-            "#search > div.s-desktop-width-max.s-desktop-content.s-wide-grid-style-t1.s-opposite-dir.s-wide-grid-style.sg-row > div.sg-col-20-of-24.s-matching-dir.sg-col-16-of-20.sg-col.sg-col-8-of-12.sg-col-12-of-16 > div > span.rush-component.s-latency-cf-section > div.s-main-slot.s-result-list.s-search-results.sg-row > div:nth-child(6) > div > div > div > div > div > div.sg-col.sg-col-4-of-12.sg-col-8-of-16.sg-col-12-of-20.sg-col-12-of-24.s-list-col-right > div > div > div.sg-row > div.sg-col.sg-col-4-of-12.sg-col-4-of-16.sg-col-4-of-20.sg-col-4-of-24 > div > div.a-section.a-spacing-none.a-spacing-top-micro.puis-price-instructions-style > div.a-row.a-size-base.a-color-base > a > span > span:nth-child(2) > span.a-price-whole"
-          ).innerHTML;
-        });
 
         // const linksArr = await page.evaluate(() => {
         //   return Array.from(
@@ -69,7 +92,7 @@ module.exports = {
         //   linksArr[i] = baseUrl + linksArr[i];
         // }
 
-        console.log(titles);
+        // console.log(titles);
         // console.log(linksArr);
         // console.log(pricesArr);
         // console.log(imgArr);
@@ -89,11 +112,11 @@ module.exports = {
 
         // fs.writeFile("links.txt", names.join("\n"));
 
-        val = titles;
+        // await browser.close();
 
-        await browser.close();
+        //make it return titles
 
-        resolve();
+        
       } catch (error) {
         reject(error);
       }

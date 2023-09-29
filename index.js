@@ -1,6 +1,9 @@
 var fs = require("fs");
+// var amzn = require("./amazon_price.js");
 const takelist = require("./takelist.js");
 
+// var search =
+//   "hp Intel Core i5 12400 16 GB/ 1000 GB HDD/ Windows 10 Professional";
 
 // function unlinkPromise(file) {
 //   return new Promise((resolve, reject) => {
@@ -22,13 +25,17 @@ async function main() {
   //   "hp Intel Core i5 12400 16 GB/ 1000 GB HDD/ Windows 10 Professional";
 
   takelist
-    .start(search)
+    .start(link)
     .then(() => {
       console.log("Execution completed successfully.");
     })
     .catch((error) => {
       console.error("An error occurred:", error);
     });
+
+  // console.log("***************************");
+
+  // console.log(await amzn.start(search));
 
   // console.log(await unlinkPromise("names.txt"));
 

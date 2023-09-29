@@ -64,10 +64,31 @@ module.exports = {
           linksArr[i] = baseUrl + linksArr[i];
         }
 
-        console.log(titles);
-        console.log(linksArr);
-        console.log(pricesArr);
-        console.log(imgArr);
+        // console.log(titles);
+        // console.log(linksArr);
+        // console.log(pricesArr);
+        // console.log(imgArr);
+
+        // create an array to store result of each title from amazon
+
+        var amznArr = [];
+
+        for (let i = 0; i < titles.length; i++) {
+          amznArr.push(await amazn.start(titles[i]));
+        }
+
+        console.log(amznArr);
+
+        // var jsonArr = [];
+        // for (let i = 0; i < titles.length; i++) {
+        //   jsonArr.push({
+        //     title: titles[i],
+        //   });
+        // }
+
+        // console.log(jsonArr);
+
+        // await fs.writeFile("prices.json", JSON.stringify(jsonArr));
 
         var jsonArr = [];
         for (let i = 0; i < titles.length; i++) {
@@ -76,6 +97,7 @@ module.exports = {
             link: linksArr[i],
             price: pricesArr[i],
             img: imgArr[i],
+            amazonPrice: amznArr[i],
           });
         }
 
